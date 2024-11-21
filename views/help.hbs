@@ -1,0 +1,120 @@
+<h1>Strona Pomocy: Aplikacja Node.js</h1>
+<p>Na tej stronie znajdziesz wyjaśnienia dotyczące aplikacji Node.js, w tym połączeń z bazą danych oraz wysyłania wiadomości e-mail.</p>
+
+<section>
+    <h2>1. Typ i Specyfika Aplikacji Node.js</h2>
+    <p>Aplikacja Node.js to serwerowy framework pozwalający na budowanie aplikacji opartej na JavaScript.</p>
+
+    <h3>Specyfikacja:</h3>
+    <ul>
+        <li>Framework: <strong>Express.js</strong> - obsługa routingu, middleware.</li>
+        <li>Silnik szablonów: <strong>Handlebars (HBS)</strong>.</li>
+        <li>Obsługa konfiguracji: <strong>dotenv</strong>.</li>
+    </ul>
+
+    <h3>Wymagania dla połączenia z bazą danych:</h3>
+    <p>Aby połączyć się z bazą danych, należy:</p>
+    <ul>
+        <li>Zainstalować odpowiedni moduł (np. <code>mongoose</code> dla MongoDB lub <code>mysql2</code> dla MySQL).</li>
+        <li>Skonfigurować zmienne środowiskowe w pliku <code>.env</code>, np.:</li>
+    </ul>
+    <pre><code class="language-env">
+DB_HOST=localhost
+DB_PORT=27017
+DB_NAME=my_database
+  </code></pre>
+
+    <h3>Wymagania dla wysyłania e-maili:</h3>
+    <p>Do wysyłania e-maili wymagane jest skonfigurowanie SMTP lub użycie usług takich jak SendGrid:</p>
+    <pre><code class="language-env">
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your_email@gmail.com
+SMTP_PASS=your_password
+  </code></pre>
+</section>
+
+<section>
+    <h2>2. Metody wysyłania wiadomości e-mail w Node.js</h2>
+    <p>Node.js oferuje różne podejścia do wysyłania wiadomości e-mail. Najczęściej stosowane są:</p>
+
+    <h3>a) SMTP (Simple Mail Transfer Protocol) za pomocą Nodemailer</h3>
+    <p>Nodemailer to popularny moduł w Node.js, który pozwala na wysyłanie e-maili za pomocą serwera SMTP.</p>
+    <h4>Przykład konfiguracji transportera:</h4>
+    <pre><code class="language-javascript">
+const nodemailer = require('nodemailer');
+
+const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST,
+  port: process.env.SMTP_PORT,
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
+  },
+});
+  </code></pre>
+
+    <h3>b) REST API usług pocztowych (SendGrid, Mailgun)</h3>
+    <p>Usługi takie jak SendGrid oferują REST API do wysyłania wiadomości bez potrzeby konfiguracji SMTP.</p>
+    <h4>Przykład wysyłania wiadomości za pomocą SendGrid:</h4>
+    <pre><code class="language-javascript">
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+const msg = {
+  to: 'example@example.com',
+  from: 'your_email@gmail.com',
+  subject: 'Test Email',
+  text: 'This is a test email.',
+};
+
+sgMail.send(msg).then(() => console.log('Email sent')).catch(console.error);
+  </code></pre>
+</section>
+
+<section>
+    <h2>3. Porównanie metod wysyłania wiadomości</h2>
+    <p>Poniższa tabela przedstawia porównanie metod wysyłania wiadomości e-mail w Node.js:</p>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Metoda</th>
+            <th>Zalety</th>
+            <th>Wady</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>SMTP (Nodemailer)</td>
+            <td>
+                <ul>
+                    <li>Łatwe wdrożenie.</li>
+                    <li>Uniwersalna obsługa przez różne serwery pocztowe.</li>
+                </ul>
+            </td>
+            <td>
+                <ul>
+                    <li>Wolniejsze w przypadku dużej liczby wiadomości.</li>
+                    <li>Wymaga konfiguracji serwera SMTP.</li>
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <td>REST API (SendGrid, Mailgun)</td>
+            <td>
+                <ul>
+                    <li>Szybkość wysyłania.</li>
+                    <li>Wbudowane monitorowanie i analityka.</li>
+                </ul>
+            </td>
+            <td>
+                <ul>
+                    <li>Wymaga rejestracji w usłudze zewnętrznej.</li>
+                    <li>Mogą występować ograniczenia darmowego planu.</li>
+                </ul>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</section>
